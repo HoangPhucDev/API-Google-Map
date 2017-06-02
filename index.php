@@ -30,16 +30,16 @@
                 "scrollY": "200px",
                 "scrollCollapse": true,
                 //"info":   false
-                "dom": '<"top"f>rt<"bottom"p><"clear">',
+                "dom": '<"top">rt<"bottom"fp><"clear">',
                 //thiết lập ngôn ngữ
                 "language":{
-                  "search": "Tìm :",
-                  "paginate": {
-                              "first":      "Trang Đầu",
-                              "last":       "Trang Cuối",
-                              "next":       "Tiếp Theo",
-                              "previous":   "Quay Lại"
-                          }
+                  "search": "Lọc :"
+                  //"paginate": {
+                   //           "first":      "Trang Đầu",
+                   //           "last":       "Trang Cuối",
+                   //           "next":       "Tiếp Theo",
+                   //           "previous":   "Quay Lại"
+                    //      }
                 }
         });
         });
@@ -75,7 +75,6 @@
         </div>
 
       </div>
-      <br>
         <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
             <thead>
                 <tr>
@@ -100,7 +99,7 @@
               <div class="input-group timduong ">
                 <input  id="TimDuongA" class="form-control" type="text" placeholder="Mặc định là vị trí hiện tại">
                 <span class="input-group-btn">
-                  <button class="btn btn-secondary" type="button" onclick='vitrihientai()'>Vị trí hiện tại</button>
+                  <button class="btn btn-secondary" type="button" onclick='vitrihientai()'><span class="glyphicon glyphicon-screenshot"> </span>Vị trí hiện tại</button>
                 </span>
               </div>
               <b>Điểm Đến:</b>
