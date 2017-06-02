@@ -4,145 +4,88 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Places Searchbox</title>
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 80%;
-        width: 100%;
-       
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #description {
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-      }
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 
-      #infowindow-content .title {
-        font-weight: bold;
-      }
-
-      #infowindow-content {
-        display: none;
-      }
-
-      #map #infowindow-content {
-        display: inline;
-      }
-
-      .pac-card {
-        margin: 10px 10px 0 0;
-        border-radius: 2px 0 0 2px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        outline: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        background-color: #fff;
-        font-family: Roboto;
-      }
-
-      #pac-container {
-        padding-bottom: 12px;
-        margin-right: 12px;
-      }
-
-      .pac-controls {
-        display: inline-block;
-        padding: 5px 11px;
-      }
-
-      .pac-controls label {
-        font-family: Roboto;
-        font-size: 13px;
-        font-weight: 300;
-      }
-
-      #pac-input {
-        background-color: #fff;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        margin-top: 10px;
-        margin-left: 12px;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        height: 25px ;
-        width: 400px;
-      }
-
-      #pac-input:focus {
-        border-color: #4d90fe;
-      }
-
-      #title {
-        color: #fff;
-        background-color: #4d90fe;
-        font-size: 25px;
-        font-weight: 500;
-        padding: 6px 12px;
-      }
-      #target {
-        width: 345px;
-      }
-      #floating-panel {
-        position: absolute;
-        top: 10px;
-        left: 55%;
-        z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
-        text-align: center;
-        font-family: 'Roboto','sans-serif';
-        line-height: 30px;
-        padding-left: 10px;
-      }
-    </style>
   </head>
   <body>
-    <input id="pac-input" class="controls" type="text" placeholder="Tìm Địa Điểm">
-   
-    <div id="map"></div>
-    <div id="floating-panel">
-      Vĩ Độ: <input type="text" readonly id="lat">
-      Kinh Độ: <input type="text" readonly id="lng">
-      <input type='button' value='Vị Trí Hiện Tại' onclick='vitrihientai()'/><br>
+  
+  
+    <div id="searchBox">
+      <div class="form-inline" role="form">
+        <div class="form-group">
+          <input id="pac-input" class="form-control" type="text" placeholder="Tìm Địa Điểm">
+          <input style="margin-top: 10px" type='button' value='Vị Trí Hiện Tại' class="form-control" onclick='vitrihientai()'/><br>
+        </div>
+      </div>
+    </div>
+    <i id="toado"></i>
 
-    </div>
-    <div >
-      <table>
-      <tr><td>Tên:</td> <td><input type='text' id='name'/> </td> </tr>
-      <tr><td>Địa Chỉ:</td> <td><input type='text' id='address'/> </td> </tr>
-      <tr><td>Loại:</td> <td><select id='type'> +
-                 <option value='Nha' SELECTED>Nhà</option>
-                 <option value='CuaHang'>Cửa Hàng</option>
-                 <option value='DiaDiem'>Địa Điểm</option>
-                 <option value='MacDinh'>Mặc Định</option>
-                 </select></td></tr>
-                 <tr><td></td><td><input type='button' value='Save' onclick='saveData()'/></td></tr>
-                 
-                 <tr><td></td><td><a href="index.php">Trang Chủ</a></td></tr>
-      </table>
-    </div>
-    <div id="thongbao">
-      
-    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9">
+          <div id="map"></div>
+        </div>
 
+        <div class="col-md-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">Thông Tin</div>
+            <div class="panel-body">
+              <div class="form">
+              <div class="form-group">
+                <label for="name"> Tên</label>
+                <input type='text' id='name' class="form-control"/>
+              </div>
+              <div class="form-group">
+              <label for="address"> Địa Chỉ</label>
+                <input type='text' id='address' class="form-control"/>
+              </div>
+              <div class="form-group">
+              <label for="type"> Loại</label>
+                <select id='type' class="form-control">
+                  <option value='Nha' SELECTED>Nhà</option>
+                  <option value='CuaHang'>Cửa Hàng</option>
+                  <option value='DiaDiem'>Địa Điểm</option>
+                  <option value='MacDinh'>Mặc Định</option>
+                </select>
+              </div>
+               <div class="form-group">
+                <input type='button' value='Save' onclick='saveData()' class="btn btn-info"/>
+              </div>
+              <a href="index.php">Trang Chủ</a></td>                                         
+            </div>
+            </div>
+          </div>
+            
+            
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script charset="utf-8">
-      // This example adds a search box to a map, using the Google Place Autocomplete
-      // feature. People can enter geographical searches. The search box will return a
-      // pick list containing a mix of places and predicted search terms.
+      var marker,
+          map, 
+          infoWindow,
+          markers,
+          pos;
 
-      // This example requires the Places library. Include the libraries=places
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-      var marker,map, infoWindow,markers,pos;
+      var icons = {
+                MacDinh: {
+                icon: 'https://www.iconfinder.com/data/icons/shopping-and-commerce-2-2/512/61-48.png'
+              },
+              CuaHang: {
+                icon: 'https://www.iconfinder.com/data/icons/shopping-and-commerce-2-2/512/61-64.png'
+              },
+              Nha: {
+                icon: 'https://www.iconfinder.com/data/icons/places-4/100/home_place_marker_location_house_apartment-48.png'
+              },
+              DiaDiem: {
+                icon: 'https://www.iconfinder.com/data/icons/ui-navigation-1/152/marker-48.png'
+              },
+              TimKiem: {
+                icon: 'https://cdn2.iconfinder.com/data/icons/snipicons/500/map-marker-48.png'
+              },
+            };
       function initAutocomplete() {
          map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 8.701768 , lng: 106.611563},
@@ -152,13 +95,13 @@
         LoadMaker();
          infoWindow = new google.maps.InfoWindow;
 
-
-
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
+        var divSearchBox = document.getElementById('searchBox');
+        var input2 = document.getElementById('toado');
         var searchBox = new google.maps.places.SearchBox(input);
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-        
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(divSearchBox);
+        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input2);
             
         // Bias the SearchBox results towards current map's viewport.
         map.addListener('bounds_changed', function() {
@@ -188,20 +131,17 @@
               console.log("Returned place contains no geometry");
               return;
             }
-            var icon = {
-              url: 'https://cdn2.iconfinder.com/data/icons/snipicons/500/map-marker-48.png'
-            };
 
             // Create a marker for each place.
             markers.push(marker = new google.maps.Marker({
               map: map,
-              icon: icon,
+              icon: icons['TimKiem'].icon,
               title: place.name,
               draggable: true,
               position: place.geometry.location
             }));
             update();
-            document.getElementById('address').value = document.getElementById('pac-input').value;
+            $('#address').val($('#pac-input').val());
             google.maps.event.addListener(marker, 'position_changed', update);
           //  infowindow.open(map, marker);
 
@@ -216,6 +156,20 @@
           map.fitBounds(bounds);
         });
         
+          map.addListener('click', function(e) {
+            markers.forEach(function(marker) {
+              marker.setMap(null);
+            });
+            markers = [];
+            markers.push(marker = new google.maps.Marker({
+              map: map,
+              icon: icons['TimKiem'].icon,
+              draggable: true,
+              position: e.latLng
+            }));
+            update();
+            google.maps.event.addListener(marker, 'position_changed', update);
+          });
         
         
       }
@@ -247,23 +201,7 @@
 
       function LoadMaker()
       {
-
-           // var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-            var icons = {
-                MacDinh: {
-                icon: 'https://www.iconfinder.com/data/icons/shopping-and-commerce-2-2/512/61-48.png'
-              },
-              CuaHang: {
-                icon: 'https://www.iconfinder.com/data/icons/shopping-and-commerce-2-2/512/61-64.png'
-              },
-              Nha: {
-                icon: 'https://www.iconfinder.com/data/icons/places-4/100/home_place_marker_location_house_apartment-48.png'
-              },
-              DiaDiem: {
-                icon: 'https://www.iconfinder.com/data/icons/ui-navigation-1/152/marker-48.png'
-              }
-            };
-            downloadUrlLoad('get_db.php', function(data) {
+            downloadUrlLoad('Get_db.php', function(data) {
             var xml = data.responseXML;
             var markers = xml.documentElement.getElementsByTagName('marker');
             Array.prototype.forEach.call(markers, function(markerElem) {
@@ -310,21 +248,12 @@
             });
           });
 
-             map.addListener('click', function() {
-                var marker = new google.maps.Marker({
-                map: map,
-                position: point,
-                animation: google.maps.Animation.DROP,
-                icon: icons[type].icon 
-              });
-              
-              });
+            
       }
 
       function update(){
       	 var latlng = marker.getPosition();
-      	 document.getElementById('lat').value = latlng.lat();
-      	 document.getElementById('lng').value = latlng.lng();
+         $('#toado').text(latlng);
       }
 
       function saveData() {
@@ -340,7 +269,27 @@
             alert('Thêm Thành Công');
           }
         });
+
+        CreateNewMarker(latlng,name,address,type);
       }
+
+      function CreateNewMarker(position,name,address,type)
+      {
+        var markernew = new google.maps.Marker({
+                map: map,
+                position: position,
+                animation: google.maps.Animation.DROP,
+                icon: icons[type].icon 
+        });
+        
+        marker.setMap(null);
+                      
+        markernew.addListener('click', function() {
+                infoWindow.setContent('<b>'+name+'</b><br>'+address);
+                infoWindow.open(map, markernew);
+        });
+      }
+
       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
@@ -384,6 +333,7 @@
       }
 
     </script>
+    <script src="js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v3&key=AIzaSyDgchp_3q3zj8d9lFjrvHZh_EkD7J0mJ94&libraries=geometry,places&callback=initAutocomplete"
          async defer></script>
   </body>

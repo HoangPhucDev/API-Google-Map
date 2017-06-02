@@ -1,5 +1,6 @@
         body{
-         height:720px;   
+         height:720px;
+         margin: 10px;   
         }
        #map {
         width: 100%;
@@ -55,12 +56,12 @@
         font-family: Roboto;
         font-size: 15px;
         font-weight: 300;
-        margin-top: 7px;
+        margin-top: 10px;
         margin-left: 12px;
         padding: 0 11px 0 13px;
         text-overflow: ellipsis;
-        width:40%
-        
+        height: 30px ;
+        width: 400px;
       }
 
       #pac-input:focus {
@@ -89,4 +90,12 @@
         font-family: 'Roboto','sans-serif';
         line-height: 30px;
         padding-left: 20px;
+      }
+
+      #toado {
+        font-size: 15px;
+        margin-bottom: 5px;
+      }
+       .form-control{
+        
       }

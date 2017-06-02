@@ -8,51 +8,118 @@
     </title>
    <link href="css/bootstrap.min.css" rel="stylesheet">
    <link href="css/style.css" rel="stylesheet">
+   <link href="css/select2.css" rel="stylesheet" />
+       <!-- DataTables CSS -->
+    <link href="css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="css/dataTables.responsive.css" rel="stylesheet">
+
+   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+   
+  <script src="js/select2.js"></script>
+
+   <script>
+        $(document).ready(function() { 
+            $("#ds").select2({
+                    placeholder: "Chọn Địa Điểm"
+                    //allowClear: true
+             }); 
+             $('#dataTables-example').DataTable({
+                responsive: true,
+                "scrollY": "200px",
+                "scrollCollapse": true,
+                //"info":   false
+                "dom": '<"top"f>rt<"bottom"p><"clear">',
+                //thiết lập ngôn ngữ
+                "language":{
+                  "search": "Tìm :",
+                  "paginate": {
+                              "first":      "Trang Đầu",
+                              "last":       "Trang Cuối",
+                              "next":       "Tiếp Theo",
+                              "previous":   "Quay Lại"
+                          }
+                }
+        });
+        });
+</script>
   </head>
   <body>
   <div class="container">
+
     <input id="pac-input" class="form-control form-control-lg " type="text" placeholder="Tìm Địa Điểm">
+
     <div class="row">
     <div class="col-md-8">
     <div id="map"></div>
     </div>
     <div class="col-md-4">
-          <select multiple="multiple" size="15" id="ds" class="form-control">
+    <b>Tìm địa điểm trên đảo:</b>
+    <div class="row">
+      <div class="col-md-8">
+          <select id="ds" class="form-control">
                     <?php
                     require_once("Model.php");
                     $data = new Model();
 
                     $result = $data->get_list('SELECT * FROM `markers` WHERE 1');
                     foreach ($result as $value) {
-                      echo '<option value="'.$value['lat'].','.$value['lng'].'">'.$value['name'].'</option>';
+                      echo '<option value="'.$value['id'].'@'.$value['lat'].','.$value['lng'].'">'.$value['name'].'</option>';
                     }   
                     ?>
         </select>
+        </div>
+        <div class="col-md-4">
         <a href="Add.html">Thêm Mới</a>
-        <hr>
-        <strong>Tìm Đường</strong><br>
-         <b>Điểm A:</b>
-          <div class="input-group timduong ">
-            <input  id="TimDuongA" class="form-control" type="text" placeholder="Mặc định là vị trí hiện tại">
-            <span class="input-group-btn">
-              <button class="btn btn-secondary" type="button" onclick='vitrihientai()'>Vị trí hiện tại</button>
-            </span>
+        </div>
+
+      </div>
+      <br>
+        <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>
+                    <th>Địa Điểm</th>
+                 </tr>
+            </thead>
+            <tbody>
+                    <?php
+                      foreach ($result as $value) {
+                      echo '<tr class="odd gradeX"><td><a href="#" onclick=selected("'.$value['id'].'@'.$value['lat'].','.$value['lng'].'")>'.$value['name'].'</a></td></tr>';
+                    }   
+                    ?>
+            </tbody>
+        </table>
+
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading"><strong>Tìm Đường</strong></div>
+          <div class="panel-body">
+              <b>Điểm Đầu:</b>
+              <div class="input-group timduong ">
+                <input  id="TimDuongA" class="form-control" type="text" placeholder="Mặc định là vị trí hiện tại">
+                <span class="input-group-btn">
+                  <button class="btn btn-secondary" type="button" onclick='vitrihientai()'>Vị trí hiện tại</button>
+                </span>
+              </div>
+              <b>Điểm Đến:</b>
+              <div class="input-group timduong ">
+              <input id="TimDuongB" class="timduong form-control" type="text" placeholder="Điểm Đến">
+                <span class="input-group-btn">
+                 <button type="submit" id="submit" class="btn btn-info">Tìm đường</button>
+                </span>
+              </div>
+              <b>Chế Độ Tìm: </b>
+              <select id="mode" class="timduong form-control">
+                <option value="DRIVING">Lái xe</option>
+                <option value="WALKING">Đi bộ</option>
+                <option value="BICYCLING">Chạy Xe Đạp</option>     
+               <option value="TRANSIT">Chuyển Tuyến</option>
+              </select>
           </div>
-          <b>Điểm B:</b>
-          <div class="input-group timduong ">
-          <input id="TimDuongB" class="timduong form-control" type="text" placeholder="Điểm B">
-            <span class="input-group-btn">
-             <button type="submit" id="submit" class="btn btn-info">Tìm đường</button>
-            </span>
-          </div>
-          <b>Chế Độ Tìm: </b>
-          <select id="mode" class="timduong form-control">
-            <option value="DRIVING">Lái xe</option>
-            <option value="WALKING">Đi bộ</option>
-            <option value="BICYCLING">Chạy Xe Đạp</option>     
-           <option value="TRANSIT">Chuyển Tuyến</option>
-          </select>
-         
+        </div>        
+
       </div>
     </div>
 
@@ -61,17 +128,31 @@
     </div>
 
 
+
     <script>
-    var marker,map,markers, infoWindow, pos,DiemGoc,DiemDen, places,directionsDisplay,directionsService,searchBox;
+    var mymarker, //mang marker trong csdl
+        infowincontent, //mang khung thông tin của marker trong csdl
+        marker, // marker chung
+        map,
+        markersearch, //marker tìm kiếm
+        infoWindow,  // khung thông tin chung
+        pos, // điểm vị trí hiện tại
+        DiemGoc,//điểm đi trong tìm đường
+        DiemDen, //điểm đến trong tìm đường
+        places,
+        directionsDisplay,//biến tìm đường
+        directionsService,//biến tìm đường
+        searchBox;//hợp tìm kiếm trong bản đồ
       function initMap() {
-        markers = [];
-        
+        markersearch = [];
+        mymarker =[];
+        infowincontent=[];
         LoadMap();
         directionsDisplay.setMap(map);
-        DiemAMacDinh();
+        DiemAMacDinh(); //gán điểm đi mặt định là vị trí hiện tại
         LoadMaker();
          // Create the search box and link it to the UI element.
-        var input = document.getElementById('pac-input');
+        var input = document.getElementById("pac-input");
         var inputA = document.getElementById('TimDuongA');
         var inputB = document.getElementById('TimDuongB');
 
@@ -119,42 +200,60 @@
           }
         });
         //sự kiện click vào button tìm đường
-        document.getElementById('submit').addEventListener('click', function() {
+        $('#submit').on('click', function() {
           diemgoc=DiemGoc;
           diemden=DiemDen;
           calculateAndDisplayRoute(directionsService, directionsDisplay,diemgoc,diemden);
         });
         //sự kiện khi thay đổi chế độ trong select box
-        document.getElementById('mode').addEventListener('change', function() {
+        $('#mode').on('change', function() {
           diemgoc=DiemGoc;
           diemden=DiemDen;
           calculateAndDisplayRoute(directionsService, directionsDisplay,diemgoc,diemden);
         });
         //sự kiện click vào ds maker
-        document.getElementById('ds').addEventListener('change', function() {
-            var LatLng = document.getElementById('ds').value;
-            var lat = LatLng.slice(0, LatLng.indexOf(","));
+        $('select').on('change', function () {
+            var LatLng = $('#ds').val();
+            var id = LatLng.slice(0,LatLng.indexOf("@"));
+            var lat = LatLng.slice(LatLng.indexOf("@")+1, LatLng.indexOf(","));
             var lng = LatLng.slice(LatLng.indexOf(",")+1);
             var vitri = new google.maps.LatLng({lat: Number(lat), lng: Number(lng)});
             DiemDen = vitri;
-            document.getElementById('TimDuongB').value=vitri;
+            $('#TimDuongB').val(vitri);
             map.setZoom(17);
             map.setCenter(vitri);
+            //infoWindow.setPosition(vitri);
+            infoWindow.setContent(infowincontent[id]);
+            infoWindow.open(map, mymarker[id]);
         });
-
       }
-
+      function selected(chuoi)
+      {
+            var LatLng = chuoi;
+            var id = LatLng.slice(0,LatLng.indexOf("@"));
+            var lat = LatLng.slice(LatLng.indexOf("@")+1, LatLng.indexOf(","));
+            var lng = LatLng.slice(LatLng.indexOf(",")+1);
+            var vitri = new google.maps.LatLng({lat: Number(lat), lng: Number(lng)});
+            DiemDen = vitri;
+            $('#TimDuongB').val(vitri);
+            map.setZoom(17);
+            map.setCenter(vitri);
+            //infoWindow.setPosition(vitri);
+            infoWindow.setContent(infowincontent[id]);
+            infoWindow.open(map, mymarker[id]);
+      }
+      //hàm kìm kiếm
       function Search()
       {
           places = searchBox.getPlaces();
           if (places.length == 0) {
             return;
           }
-          // Clear out the old markers.
-          markers.forEach(function(marker) {
+          // Clear out the old markersearch.
+          markersearch.forEach(function(marker) {
             marker.setMap(null);
           });
-          markers = [];
+          markersearch = [];
 
           // For each place, get the icon, name and location.
           var bounds = new google.maps.LatLngBounds();
@@ -168,14 +267,15 @@
             };
 
             // Create a marker for each place.
-            markers.push(marker = new google.maps.Marker({
+            markersearch.push(marker = new google.maps.Marker({
               map: map,
               icon: icon,
               title: place.name,
               draggable: true,
               position: place.geometry.location
             }));
-            
+            $('#TimDuongB').val(place.geometry.location);
+            DiemDen = marker.getPosition();
             google.maps.event.addListener(marker, 'position_changed', update);
           
             //google.maps.event.addListener(marker, 'click', function(){infoWindow.open(map, marker);});
@@ -189,7 +289,7 @@
           });
           map.fitBounds(bounds);
       }
-
+      //hàm tải bản đồ
       function LoadMap()
       {
             directionsDisplay = new google.maps.DirectionsRenderer;
@@ -201,27 +301,24 @@
             });
         infoWindow = new google.maps.InfoWindow;
       }
-
+      //hàm tải các marker trong csdl lên bản đồ
       function LoadMaker()
       {
-
-
-           // var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
             var icons = {
                 MacDinh: {
-                icon: 'https://www.iconfinder.com/data/icons/shopping-and-commerce-2-2/512/61-48.png'
+                icon: 'https://www.iconfinder.com/data/icons/shopping-and-commerce-2-2/512/61-32.png'
               },
               CuaHang: {
-                icon: 'https://www.iconfinder.com/data/icons/shopping-and-commerce-2-2/512/61-64.png'
+                icon: 'https://www.iconfinder.com/data/icons/shopping-and-commerce-2-2/512/61-32.png'
               },
               Nha: {
-                icon: 'https://www.iconfinder.com/data/icons/places-4/100/home_place_marker_location_house_apartment-48.png'
+                icon: 'https://www.iconfinder.com/data/icons/places-4/100/home_place_marker_location_house_apartment-32.png'
               },
               DiaDiem: {
-                icon: 'https://www.iconfinder.com/data/icons/ui-navigation-1/152/marker-48.png'
+                icon: 'https://www.iconfinder.com/data/icons/ui-navigation-1/152/marker-32.png'
               }
             };
-            downloadUrl('get_db.php', function(data) {
+            downloadUrl('Get_db.php', function(data) {
             var xml = data.responseXML;
             var markers = xml.documentElement.getElementsByTagName('marker');
             Array.prototype.forEach.call(markers, function(markerElem) {
@@ -234,16 +331,16 @@
                   parseFloat(markerElem.getAttribute('lat')),
                   parseFloat(markerElem.getAttribute('lng')));
 
-              var infowincontent = document.createElement('div');
+              infowincontent[id] = document.createElement('div');
               var strong = document.createElement('strong');
               strong.textContent = name
-              infowincontent.appendChild(strong);
-              infowincontent.appendChild(document.createElement('br'));
+              infowincontent[id].appendChild(strong);
+              infowincontent[id].appendChild(document.createElement('br'));
 
               var text = document.createElement('text');
               text.textContent = address
-              infowincontent.appendChild(text);
-              infowincontent.appendChild(document.createElement('br'));
+              infowincontent[id].appendChild(text);
+              infowincontent[id].appendChild(document.createElement('br'));
               
               var a = document.createElement('a');
               var href = document.createAttribute("href"); 
@@ -251,19 +348,19 @@
                     a.setAttributeNode(href);
                     
               a.textContent = "Xem Chi Tiết"
-              infowincontent.appendChild(a);
+              infowincontent[id].appendChild(a);
               
               
-              var marker = new google.maps.Marker({
+              mymarker[id] = new google.maps.Marker({
                 map: map,
                 position: point,
                 animation: google.maps.Animation.DROP,
                 icon: icons[type].icon 
               });
               
-              marker.addListener('click', function() {
-                infoWindow.setContent(infowincontent);
-                infoWindow.open(map, marker);
+              mymarker[id].addListener('click', function() {
+                infoWindow.setContent(infowincontent[id]);
+                infoWindow.open(map, mymarker[id]);
               });
             });
           });
@@ -275,7 +372,7 @@
           alert("Bạn Phải Nhập Thông Tin");
         }else
       {
-        var selectedMode = document.getElementById('mode').value;
+        var selectedMode = $('#mode').val();
         //var DiemDen = marker.getPosition();
         directionsService.route({
           origin: DiemGoc,  // Haight.
@@ -312,7 +409,7 @@
 
       function vitrihientai()
       {
-        document.getElementById('TimDuongA').value = "Vị Trí Hiện Tại";
+        $('#TimDuongA').val("Vị Trí Hiện Tại");
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
@@ -324,7 +421,6 @@
               lat: position.coords.latitude,
               lng: position.coords.longitude
             };
-
             //marker = new google.maps.Marker({
              //       position: pos,
               //      animation: google.maps.Animation.DROP,
@@ -349,6 +445,8 @@
 
       function update(){
          var latlng = marker.getPosition();
+         $('#TimDuongB').val(marker.getPosition());
+         DiemDen = marker.getPosition();
       }
        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
@@ -374,17 +472,17 @@
         request.send(null);
       }
 
-
-     
       function doNothing() {}
 
-
-      
-      
-       
-     
     </script>
+
+
+
     <script src="js/bootstrap.min.js"></script>
+        <!-- DataTables JavaScript -->
+    <script src="js/jquery.dataTables.min.js"></script>
+    <script src="js/dataTables.bootstrap.min.js"></script>
+    <script src="js/dataTables.responsive.js"></script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?v3&key=AIzaSyDgchp_3q3zj8d9lFjrvHZh_EkD7J0mJ94&libraries=geometry,places&callback=initMap">
     </script>
