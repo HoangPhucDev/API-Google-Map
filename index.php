@@ -142,6 +142,7 @@
         directionsDisplay,//biến tìm đường
         directionsService,//biến tìm đường
         searchBox;//hợp tìm kiếm trong bản đồ
+
       function initMap() {
         markersearch = [];
         mymarker =[];
@@ -287,6 +288,7 @@
             }
           });
           map.fitBounds(bounds);
+          console.log(mymarker);
       }
       //hàm tải bản đồ
       function LoadMap()
